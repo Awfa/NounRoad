@@ -50,8 +50,7 @@ public class GameManager {
 		if (gameState == State.GAME_INITIALIZE) {
 			timer += deltaTime;
 			if (timer > INIT_TIME) {
-				gameState = State.GAME_RUNNING;
-				messageSystem.sendMessage(Message.STATE_CHANGE, new MessageExtra(gameState.ordinal()));
+				changeState(State.GAME_RUNNING);
 			}
 		}
 		if (gameState == State.GAME_RUNNING) {
@@ -60,8 +59,7 @@ public class GameManager {
 				players[player].increaseStrikes();
 				
 				if (players[player].getStrikes() >= MAX_STRIKES) {
-					gameState = State.GAME_OVER;
-					messageSystem.sendMessage(Message.STATE_CHANGE, new MessageExtra(gameState.ordinal()));
+					changeState(State.GAME_OVER);
 				}
 				gotoNextPlayer();
 			}
@@ -78,8 +76,7 @@ public class GameManager {
 			
 			// Once everyone is ready, get the game to go
 			if (player == players.length) {
-				gameState = State.GAME_INITIALIZE;
-				messageSystem.sendMessage(Message.STATE_CHANGE, new MessageExtra(gameState.ordinal()));
+				changeState(State.GAME_INITIALIZE);
 			}
 		} else if (gameState == State.GAME_INITIALIZE) {
 			// shouldn't be able to receive words while initializing
@@ -100,6 +97,11 @@ public class GameManager {
 	
 	private void gotoNextPlayer() {
 		player = (player + 1) % players.length;
+	}
+	
+	private void changeState(State newState) {
+		gameState = newState;
+		messageSystem.sendMessage(Message.STATE_CHANGE, new MessageExtra(gameState.ordinal()));
 	}
 	
 }
