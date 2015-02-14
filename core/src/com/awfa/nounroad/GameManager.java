@@ -3,6 +3,7 @@ package com.awfa.nounroad;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.awfa.nounroad.MessageSystem.Message;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -25,8 +26,9 @@ public class GameManager {
 	
 	private State gameState;
 	private WordManager wordManager;
+	private MessageSystem messageSystem;
 	
-	public GameManager() {
+	public GameManager(MessageSystem messageSystem) {
 		gameState = State.ENTERING_PLAYER_NAMES;
 		players = new Player[2];
 		
@@ -41,13 +43,14 @@ public class GameManager {
 		}
 		
 		wordManager = new WordManager(words);
+		this.messageSystem = messageSystem;
 	}
 	
 	public void update(float deltaTime) {
 		if (gameState == State.GAME_INITIALIZE) {
 			timer += deltaTime;
 			if (timer > INIT_TIME) {
-				gameState = State.GAME_RUNNING;
+				changeState(State.GAME_RUNNING);
 			}
 		}
 		if (gameState == State.GAME_RUNNING) {
@@ -56,7 +59,7 @@ public class GameManager {
 				players[player].increaseStrikes();
 				
 				if (players[player].getStrikes() >= MAX_STRIKES) {
-					gameState = State.GAME_OVER;
+					changeState(State.GAME_OVER);
 				}
 				gotoNextPlayer();
 			}
@@ -73,7 +76,7 @@ public class GameManager {
 			
 			// Once everyone is ready, get the game to go
 			if (player == players.length) {
-				gameState = State.GAME_INITIALIZE;
+				changeState(State.GAME_INITIALIZE);
 			}
 		} else if (gameState == State.GAME_INITIALIZE) {
 			// shouldn't be able to receive words while initializing
@@ -94,6 +97,11 @@ public class GameManager {
 	
 	private void gotoNextPlayer() {
 		player = (player + 1) % players.length;
+	}
+	
+	private void changeState(State newState) {
+		gameState = newState;
+		messageSystem.sendMessage(Message.STATE_CHANGE, new MessageExtra(gameState.ordinal()));
 	}
 	
 }
