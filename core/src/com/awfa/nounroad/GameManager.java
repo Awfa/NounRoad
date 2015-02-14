@@ -3,6 +3,7 @@ package com.awfa.nounroad;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.awfa.nounroad.MessageSystem.Message;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
@@ -25,8 +26,9 @@ public class GameManager {
 	
 	private State gameState;
 	private WordManager wordManager;
+	private MessageSystem messageSystem;
 	
-	public GameManager() {
+	public GameManager(MessageSystem messageSystem) {
 		gameState = State.ENTERING_PLAYER_NAMES;
 		players = new Player[2];
 		
@@ -41,6 +43,7 @@ public class GameManager {
 		}
 		
 		wordManager = new WordManager(words);
+		this.messageSystem = messageSystem;
 	}
 	
 	public void update(float deltaTime) {
@@ -48,6 +51,7 @@ public class GameManager {
 			timer += deltaTime;
 			if (timer > INIT_TIME) {
 				gameState = State.GAME_RUNNING;
+				messageSystem.sendMessage(Message.STATE_CHANGE, new MessageExtra(gameState.ordinal()));
 			}
 		}
 		if (gameState == State.GAME_RUNNING) {
@@ -57,6 +61,7 @@ public class GameManager {
 				
 				if (players[player].getStrikes() >= MAX_STRIKES) {
 					gameState = State.GAME_OVER;
+					messageSystem.sendMessage(Message.STATE_CHANGE, new MessageExtra(gameState.ordinal()));
 				}
 				gotoNextPlayer();
 			}
@@ -74,6 +79,7 @@ public class GameManager {
 			// Once everyone is ready, get the game to go
 			if (player == players.length) {
 				gameState = State.GAME_INITIALIZE;
+				messageSystem.sendMessage(Message.STATE_CHANGE, new MessageExtra(gameState.ordinal()));
 			}
 		} else if (gameState == State.GAME_INITIALIZE) {
 			// shouldn't be able to receive words while initializing
