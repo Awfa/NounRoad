@@ -9,7 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 public class GameManager {
-	public static final float INIT_TIME = 1.0f;
+	public static final float INIT_TIME = 0.2f;
 	public static final float TIME_LIMIT = 12.0f;
 	public static final int MAX_STRIKES = 3;
 	public static final int NUM_OF_PLAYERS = 2;

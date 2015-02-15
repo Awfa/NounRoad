@@ -1,42 +1,69 @@
 
 graphicAssets.png
-size: 512,128
+size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 arrow
   rotate: false
-  xy: 172, 42
+  xy: 454, 42
   size: 68, 52
   orig: 68, 52
   offset: 0, 0
   index: -1
+greenTypeWordBox
+  rotate: false
+  xy: 2, 2
+  size: 92, 92
+  split: 36, 36, 21, 22
+  pad: 9, 9, 13, 13
+  orig: 92, 92
+  offset: 0, 0
+  index: -1
 nameBox
   rotate: false
-  xy: 96, 20
+  xy: 378, 20
   size: 74, 74
   split: 18, 18, 18, 18
   pad: 11, 11, 9, 10
   orig: 74, 74
   offset: 0, 0
   index: -1
+redTypeWordBox
+  rotate: false
+  xy: 96, 2
+  size: 92, 92
+  split: 36, 36, 21, 22
+  pad: 9, 9, 13, 13
+  orig: 92, 92
+  offset: 0, 0
+  index: -1
 strikeOut
   rotate: false
-  xy: 242, 40
+  xy: 524, 40
   size: 54, 54
   orig: 54, 54
   offset: 0, 0
   index: -1
 strikeOutShadow
   rotate: false
-  xy: 298, 40
+  xy: 580, 40
   size: 54, 54
   orig: 54, 54
   offset: 0, 0
   index: -1
 typeWordBox
   rotate: false
-  xy: 2, 2
+  xy: 190, 2
+  size: 92, 92
+  split: 36, 36, 21, 22
+  pad: 9, 9, 13, 13
+  orig: 92, 92
+  offset: 0, 0
+  index: -1
+yellowTypeWordBox
+  rotate: false
+  xy: 284, 2
   size: 92, 92
   split: 36, 36, 21, 22
   pad: 9, 9, 13, 13
