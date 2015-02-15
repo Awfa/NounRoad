@@ -2,6 +2,7 @@ package com.awfa.nounroad;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Stack;
 
 import com.awfa.nounroad.MessageSystem.Message;
 import com.badlogic.gdx.Gdx;
@@ -9,7 +10,7 @@ import com.badlogic.gdx.files.FileHandle;
 
 public class GameManager {
 	public static final float INIT_TIME = 1.0f;
-	public static final float TIME_LIMIT = 30.0f;
+	public static final float TIME_LIMIT = 12.0f;
 	public static final int MAX_STRIKES = 3;
 	public static final int NUM_OF_PLAYERS = 2;
 	
@@ -60,12 +61,14 @@ public class GameManager {
 			timer += deltaTime;
 			if (timer > TIME_LIMIT) {
 				players[player].increaseStrikes();
-				timer = 0.0f;
+				messageSystem.sendMessage(Message.PLAYER_STRIKED);
 				if (players[player].getStrikes() >= MAX_STRIKES) {
+					gotoNextPlayer();
 					changeState(State.GAME_OVER);
 				} else {
 					gotoNextPlayer();
 				}
+				timer = 0.0f;
 			}
 		}
 	}
@@ -74,6 +77,7 @@ public class GameManager {
 		if (gameState == State.ENTERING_PLAYER_NAMES) {
 			// Make a new player with a name
 			players[player] = new Player(word);
+			messageSystem.sendMessage(Message.PLAYER_NAME_ENTERED);
 			if (player == players.length - 1) {
 				// Once everyone is ready, get the game to go
 				changeState(State.GAME_INITIALIZE);
@@ -87,6 +91,7 @@ public class GameManager {
 			boolean result = wordManager.playWord(word);
 			if (result) { // if the word works, give the score
 				players[player].increaseScore(1);
+				messageSystem.sendMessage(Message.PLAYER_SCORED);
 				timer = 0.0f;
 				gotoNextPlayer();
 			}
@@ -102,7 +107,11 @@ public class GameManager {
 	}
 	
 	public float getTimeLeft() {
-		return TIME_LIMIT - timer;
+		if (gameState == State.GAME_INITIALIZE) {
+			return INIT_TIME - timer;
+		} else {
+			return TIME_LIMIT - timer;
+		}
 	}
 	
 	public Player getCurrentPlayer() {
@@ -111,12 +120,18 @@ public class GameManager {
 	
 	public String getRecentWords() {
 		StringBuilder recentWords = new StringBuilder();
+		Stack<String> reversedWords = new Stack<String>();
+		
 		for(String word : wordManager.getUsedWords()) {
-			recentWords.append(word);
-			recentWords.append(" ");
+			reversedWords.push(word);
 		}
-		if (recentWords.length() > 0) {
-			recentWords.deleteCharAt(recentWords.length()-1);
+		
+		if(!reversedWords.isEmpty()) {
+			recentWords.append(reversedWords.pop());
+			while(!reversedWords.isEmpty()) {
+				recentWords.append(" ");
+				recentWords.append(reversedWords.pop());
+			}
 		}
 		
 		return recentWords.toString();
@@ -128,7 +143,7 @@ public class GameManager {
 	
 	private void changeState(State newState) {
 		gameState = newState;
-		messageSystem.sendMessage(Message.STATE_CHANGE, new MessageExtra(gameState.ordinal()));
+		messageSystem.sendMessage(Message.STATE_CHANGE);
 	}
 	
 }

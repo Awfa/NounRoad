@@ -11,19 +11,26 @@ public class GameInputManager implements InputProcessor {
 	private MessageSystem messageSystem;
 	
 	public GameInputManager(MessageSystem messageSystem) {
-		input = "";
 		this.messageSystem = messageSystem;
+		input = "";
 	}
 	
 	public String getInput() {
 		return input;
+	}
+	
+	public void setInput(String string) {
+		if (string == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		input = string;
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.ENTER) {
 			messageSystem.sendMessage(Message.TEXT_ENTERED, new MessageExtra(input));
-			input = "";
 			
 			return true;
 		} else if (keycode == Keys.BACKSPACE && input.length() > 0) {

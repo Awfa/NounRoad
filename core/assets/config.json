@@ -1,24 +1,4 @@
 {
-	drawables: [
-		{
-			name: "strike",
-			file: "strikeOut.png",
-
-			xPos: 28,
-			yPos: 475,
-			xOffset: 60,
-			yOffset: 0
-		},
-		{
-			name: "strikeShadow",
-			file: "grey-strikeOut.png",
-
-			xPos: 28,
-			yPos: 475,
-			xOffset: 60,
-			yOffset: 0
-		}
-	],
 	positions: [
 		{
 			name: "strikePositionPlayer1",
@@ -33,6 +13,20 @@
 			yPos: 475,
 			xOffset: -60,
 			yOffset: 0
+		},
+		{
+			name: "leftNameBox",
+			xPos: -18,
+			yPos: 537,
+			xOffset: 0,
+			yOffset: 0
+		},
+		{
+			name: "rightNameBox",
+			xPos: 1298,
+			yPos: 537,
+			xOffset: 0,
+			yOffset:0
 		}
 	]
 }
