@@ -4,6 +4,7 @@ import java.util.*;
 
 import com.awfa.nounroad.MessageSystem.Message;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
 public class GameInputManager implements InputProcessor {
@@ -12,7 +13,7 @@ public class GameInputManager implements InputProcessor {
 	
 	public GameInputManager(MessageSystem messageSystem) {
 		this.messageSystem = messageSystem;
-		input = "";
+		input = "Player1";
 	}
 	
 	public String getInput() {
@@ -34,7 +35,11 @@ public class GameInputManager implements InputProcessor {
 			
 			return true;
 		} else if (keycode == Keys.BACKSPACE && input.length() > 0) {
-			input = input.substring(0, input.length()-1);
+			if (Gdx.input.isKeyPressed(Keys.SHIFT_LEFT)) {
+				input = "";
+			} else {
+				input = input.substring(0, input.length()-1);
+			}
 			return true;
 		}
 		
@@ -49,7 +54,7 @@ public class GameInputManager implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		if (input.length() < 20 && Character.isAlphabetic(character)) {
+		if (input.length() < 25 && Character.isAlphabetic(character)) {
 			input += character;
 			return true;
 		}

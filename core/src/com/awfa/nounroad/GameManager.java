@@ -101,11 +101,17 @@ public class GameManager {
 			} else {
 				messageSystem.sendMessage(Message.INVALID_INPUT, new MessageExtra(player));
 			}
+		} else if (gameState == State.GAME_OVER && word.equals("CodeDayWinningFeature")) {
+			reset();
 		}
 	}
 	
 	public State getState() {
 		return gameState;
+	}
+	
+	public int getPlayerIndex() {
+		return player;
 	}
 	
 	public int getWordsPlayed() {
@@ -144,6 +150,16 @@ public class GameManager {
 		}
 		
 		return recentWords.toString();
+	}
+	
+	public void reset() {
+		wordManager.resetGame();
+		timer = 0;
+		gameState = State.ENTERING_PLAYER_NAMES;
+		player = 0;
+		wordsPlayed = 0;
+		
+		messageSystem.sendMessage(Message.GAME_RESET);
 	}
 	
 	private void gotoNextPlayer() {

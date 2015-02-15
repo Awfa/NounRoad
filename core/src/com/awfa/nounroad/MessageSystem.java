@@ -8,7 +8,8 @@ public class MessageSystem {
 		STATE_CHANGE,
 		TEXT_ENTERED,
 		PLAYER_SCORED, PLAYER_STRIKED, INVALID_INPUT,
-		PLAYER_NAME_ENTERED
+		PLAYER_NAME_ENTERED,
+		GAME_RESET
 	}
 	
 	private ObjectMap<Message, Array<MessageListener>> listenerMap;
