@@ -35,7 +35,12 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	private BitmapFont gameFont;
 	
 	private NinePatch nameBox;
+	
 	private NinePatch textBox;
+	
+	private NinePatch redTextBox;
+	private NinePatch greenTextBox;
+	private NinePatch yellowTextBox;
 	
 	private ParticleEffect sparks;
 	private ParticleEmitter sparkEmitter;
@@ -45,6 +50,10 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	List<PooledEffect> strikeSparkEffects;
 	
 	private InterpolatedPosition recentWordsPosition;
+	private AlphaController redAlpha;
+	private AlphaController greenAlpha;
+	private AlphaController yellowAlpha;
+	
 	@Override
 	public void create() {
 		messageSystem = new MessageSystem();
@@ -61,6 +70,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		messageSystem.register(this, Message.STATE_CHANGE);
 		messageSystem.register(this, Message.PLAYER_SCORED);
 		messageSystem.register(this, Message.PLAYER_STRIKED);
+		messageSystem.register(this, Message.INVALID_INPUT);
 		messageSystem.register(this, Message.PLAYER_NAME_ENTERED);
 		
 		atlas = new TextureAtlas("graphicAssets.atlas");
@@ -70,7 +80,13 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		gameFont = new BitmapFont(Gdx.files.internal("font.txt"));
 		
 		nameBox = atlas.createPatch("nameBox");
+		
 		textBox = atlas.createPatch("typeWordBox");
+		
+		redTextBox = atlas.createPatch("redTypeWordBox");
+		yellowTextBox = atlas.createPatch("yellowTypeWordBox");
+		greenTextBox = atlas.createPatch("greenTypeWordBox");
+		
 		
 		sparks = new ParticleEffect();
 		sparks.load(Gdx.files.internal("sparks.p"), Gdx.files.internal(""));
@@ -96,11 +112,18 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			recentWordsDP.yPos,
 			Interpolation.exp10In
 		);
+		
+		FlashInterpolation f = new FlashInterpolation();
+		redAlpha = new AlphaController(f);
+		greenAlpha = new AlphaController(f);
+		yellowAlpha = new AlphaController(f);
 	}
 
 	@Override
 	public void render() {
-		gameManager.update(Gdx.graphics.getDeltaTime());
+		float deltaTime = Gdx.graphics.getDeltaTime();
+		
+		gameManager.update(deltaTime);
 		Gdx.gl.glClearColor(203.f/255, 240.f/255, 241.f/255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		
@@ -121,6 +144,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 				progressWidth = 823*(gameManager.getTimeLeft()/GameManager.TIME_LIMIT);
 			}
 			shape.rect(250, 720-480-12, progressWidth, 3);
+			shape.rect(250, 720-480-12-3, 3, 9);
 			sparkEmitter.setPosition(250 + progressWidth, 720-480-12);
 		}
 		shape.end();
@@ -133,6 +157,19 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		// draw the text box background
 		textBox.draw(batch, 250, 720-480, 823, 92);
 
+		// draw the text box overlays
+		redAlpha.update(deltaTime/0.5f);
+		greenAlpha.update(deltaTime/0.5f);
+		yellowAlpha.update(deltaTime/0.5f);
+		
+		redTextBox.setColor(new Color(1.0f, 1.0f, 1.0f, redAlpha.getAlpha()));
+		greenTextBox.setColor(new Color(1.0f, 1.0f, 1.0f, greenAlpha.getAlpha()));
+		yellowTextBox.setColor(new Color(1.0f, 1.0f, 1.0f, yellowAlpha.getAlpha()));
+		
+		redTextBox.draw(batch, 250, 720-480, 823, 92);
+		greenTextBox.draw(batch, 250, 720-480, 823, 92);
+		yellowTextBox.draw(batch, 250, 720-480, 823, 92);
+		
 		if(gameManager.getState() != GameManager.State.ENTERING_PLAYER_NAMES) {
 			// draw player 1's box and name
 			Player player1 = gameManager.getPlayer(0);
@@ -162,7 +199,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			arrow.draw(batch);
 			
 			// draw the recent words making the most recent word appear on the very right
-			recentWordsPosition.update(Gdx.graphics.getDeltaTime()/0.5f);
+			recentWordsPosition.update(deltaTime/0.5f);
 			gameFont.draw(batch, gameManager.getRecentWords(),
 					recentWordsPosition.getCurrX(),
 					recentWordsPosition.getCurrY());
@@ -172,10 +209,10 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			drawFromConfig(batch, "strikeOut", "strikePositionPlayer2", player2.getStrikes());
 			
 			// render the sparks
-			sparkEmitter.draw(batch, Gdx.graphics.getDeltaTime());
+			sparkEmitter.draw(batch, deltaTime);
 			for (int i = strikeSparkEffects.size()-1; i >= 0; i--) {
 				PooledEffect effect = strikeSparkEffects.get(i);
-				effect.draw(batch, Gdx.graphics.getDeltaTime());
+				effect.draw(batch, deltaTime);
 				if (effect.isComplete()) {
 					effect.free();
 					strikeSparkEffects.remove(i);
@@ -229,12 +266,12 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 				gameInputManager.setInput(lastLetter);
 				
 				// make sure sliding doesn't glitch when the recent words limit is reached
-				String[] lastWordsList = lastWords.split(" ");
-				if(lastWordsList.length == WordManager.MAX_RECENT_WORDS) {
+				String[] lastWordsList = lastWords.split(GameManager.RECENT_DELIMITER);
+				if(lastWordsList.length == WordManager.MAX_RECENT_WORDS+1) {
 					recentWordsPosition.setNewPosition(
 							recentWordsDP.xPos
 								-gameFont.getBounds(lastWords).width
-								+gameFont.getBounds(" " + lastWordsList[lastWordsList.length-1]).width,
+								+gameFont.getBounds(GameManager.RECENT_DELIMITER + lastWordsList[lastWordsList.length-1]).width,
 							recentWordsDP.yPos);
 				}
 				
@@ -246,8 +283,11 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 				gameInputManager.setInput("");
 			}
 		}
-		
+		if (message == Message.PLAYER_SCORED) {
+			greenAlpha.startInterpolation();
+		}
 		if (message == Message.PLAYER_STRIKED) {
+			redAlpha.startInterpolation();
 			if (extra.number == 0) { // first player striked
 				int numOfStrikes = gameManager.getPlayer(0).getStrikes();
 				PooledEffect effect = strikeSparksEffectPool.obtain();
@@ -261,6 +301,10 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 				effect.setPosition(dp.xPos + dp.xOffset * numOfStrikes + 90, dp.yPos + 30);
 				strikeSparkEffects.add(effect);
 			}
+		}
+		
+		if (message == Message.INVALID_INPUT) {
+			yellowAlpha.startInterpolation();
 		}
 	}
 }
