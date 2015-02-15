@@ -1,0 +1,32 @@
+{
+	positions: [
+		{
+			name: "strikePositionPlayer1",
+			xPos: 28,
+			yPos: 475,
+			xOffset: 60,
+			yOffset: 0
+		},
+		{
+			name: "strikePositionPlayer2",
+			xPos: 1198,
+			yPos: 475,
+			xOffset: -60,
+			yOffset: 0
+		},
+		{
+			name: "leftNameBox",
+			xPos: -18,
+			yPos: 537,
+			xOffset: 0,
+			yOffset: 0
+		},
+		{
+			name: "rightNameBox",
+			xPos: 1298,
+			yPos: 537,
+			xOffset: 0,
+			yOffset:0
+		}
+	]
+}
