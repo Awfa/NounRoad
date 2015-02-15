@@ -79,7 +79,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		recentWordsPosition = new InterpolatedPosition(
 			recentWordsDP.xPos,
 			recentWordsDP.yPos,
-			Interpolation.swing
+			Interpolation.swingIn
 		);
 	}
 
@@ -192,8 +192,14 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			if(!lastWords.isEmpty()) {
 				String lastLetter = lastWords.substring(lastWords.length()-1, lastWords.length());
 				gameInputManager.setInput(lastLetter);
+				String[] lastWordsList = lastWords.split(" ");
+				if(lastWordsList.length == WordManager.MAX_RECENT_WORDS) {
+					recentWordsPosition.setNewPosition(
+							1280-27-gameFont.getBounds(lastWords).width+gameFont.getBounds(" " + lastWordsList[lastWordsList.length-1]).width,
+							GameConfig.drawPositions.get("recentWords").yPos);
+				}
 				recentWordsPosition.setNewTarget(
-						1280-27-gameFont.getBounds(gameManager.getRecentWords()).width,
+						1280-27-gameFont.getBounds(lastWords).width,
 						GameConfig.drawPositions.get("recentWords").yPos);
 			} else {
 				gameInputManager.setInput("");

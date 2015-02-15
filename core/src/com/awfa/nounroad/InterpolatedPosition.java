@@ -31,6 +31,16 @@ public class InterpolatedPosition {
 		return interpolation.apply(y, targetY, currentAlpha);
 	}
 	
+	public void setNewPosition(float newX, float newY) {
+		this.x = newX;
+		this.y = newY;
+		
+		targetX = newX;
+		targetY = newY;
+		
+		reset();
+	}
+	
 	public void setNewTarget(float newX, float newY) {
 		// finish going to previous target
 		this.x = targetX;
