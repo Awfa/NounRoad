@@ -65,6 +65,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		messageSystem.register(this, Message.PLAYER_STRIKED);
 		messageSystem.register(this, Message.INVALID_INPUT);
 		messageSystem.register(this, Message.PLAYER_NAME_ENTERED);
+		messageSystem.register(this, Message.GAME_RESET);
 		
 		LoggingSystem logger = new LoggingSystem(messageSystem);
 		AudioSystem audioSystem = new AudioSystem(messageSystem);
@@ -262,8 +263,9 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			}
 		} else if (message == Message.PLAYER_NAME_ENTERED && gameManager.getPlayerIndex() == 0) {
 			gameInputManager.setInput("Player2");
+		} else if (message == Message.GAME_RESET) {
+			gameInputManager.setInput("Player1");
 		}
-		
 	}
 
 	@Override

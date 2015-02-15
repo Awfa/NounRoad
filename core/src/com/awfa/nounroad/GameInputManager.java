@@ -49,7 +49,7 @@ public class GameInputManager implements InputProcessor {
 
 	@Override
 	public boolean keyTyped(char character) {
-		if (input.length() < 20 && Character.isAlphabetic(character)) {
+		if (input.length() < 25 && Character.isAlphabetic(character)) {
 			input += character;
 			return true;
 		}
