@@ -35,6 +35,9 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	private ParticleEffect sparks;
 	private ParticleEmitter sparkEmitter;
 	
+	private ParticleEffect strikeSparks;
+	private ParticleEmitter strikeSparkEmitter;
+	
 	private InterpolatedPosition recentWordsPosition;
 	@Override
 	public void create() {
@@ -67,6 +70,10 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		sparkEmitter = sparks.findEmitter("sparks");
 		sparkEmitter.setContinuous(true);
 		
+		strikeSparks = new ParticleEffect();
+		strikeSparks.load(Gdx.files.internal("strikeSparks.p"), Gdx.files.internal(""));
+		strikeSparkEmitter = strikeSparks.findEmitter("sparks");
+		
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 
@@ -79,7 +86,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		recentWordsPosition = new InterpolatedPosition(
 			recentWordsDP.xPos,
 			recentWordsDP.yPos,
-			Interpolation.swingIn
+			Interpolation.exp10In
 		);
 	}
 
@@ -187,23 +194,6 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			if (gameManager.getState() == GameManager.State.GAME_OVER) {
 				gameInputManager.setInput(gameManager.getCurrentPlayer().getName() + " wins!");
 			}
-		} else if (message == Message.PLAYER_STRIKED || message == Message.PLAYER_SCORED) {
-			String lastWords = gameManager.getRecentWords();
-			if(!lastWords.isEmpty()) {
-				String lastLetter = lastWords.substring(lastWords.length()-1, lastWords.length());
-				gameInputManager.setInput(lastLetter);
-				String[] lastWordsList = lastWords.split(" ");
-				if(lastWordsList.length == WordManager.MAX_RECENT_WORDS) {
-					recentWordsPosition.setNewPosition(
-							1280-27-gameFont.getBounds(lastWords).width+gameFont.getBounds(" " + lastWordsList[lastWordsList.length-1]).width,
-							GameConfig.drawPositions.get("recentWords").yPos);
-				}
-				recentWordsPosition.setNewTarget(
-						1280-27-gameFont.getBounds(lastWords).width,
-						GameConfig.drawPositions.get("recentWords").yPos);
-			} else {
-				gameInputManager.setInput("");
-			}
 		} else if (message == Message.PLAYER_NAME_ENTERED) {
 			gameInputManager.setInput("");
 		}
@@ -214,6 +204,32 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	public void recieveMessage(Message message, MessageExtra extra) {
 		if (message == Message.TEXT_ENTERED) {
 			gameManager.takeInput(extra.message);
+		} else if (message == Message.PLAYER_STRIKED || message == Message.PLAYER_SCORED) {
+			String lastWords = gameManager.getRecentWords();
+			if(!lastWords.isEmpty()) {
+				DrawPosition recentWordsDP = GameConfig.drawPositions.get("recentWords");
+				// set the input to start with a correct letter if possible
+				String lastLetter = lastWords.substring(lastWords.length()-1, lastWords.length());
+				gameInputManager.setInput(lastLetter);
+				
+				// make sure sliding doesn't glitch when the recent words limit is reached
+				String[] lastWordsList = lastWords.split(" ");
+				if(lastWordsList.length == WordManager.MAX_RECENT_WORDS) {
+					recentWordsPosition.setNewPosition(
+							recentWordsDP.xPos
+								-gameFont.getBounds(lastWords).width
+								+gameFont.getBounds(" " + lastWordsList[lastWordsList.length-1]).width,
+							recentWordsDP.yPos);
+				}
+				
+				// set the slide target for recent words
+				
+				recentWordsPosition.setNewTarget(
+						recentWordsDP.xPos-gameFont.getBounds(lastWords).width,
+						recentWordsDP.yPos);
+			} else {
+				gameInputManager.setInput("");
+			}
 		}
 	}
 }

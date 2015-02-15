@@ -61,7 +61,7 @@ public class GameManager {
 			timer += deltaTime;
 			if (timer > TIME_LIMIT) {
 				players[player].increaseStrikes();
-				messageSystem.sendMessage(Message.PLAYER_STRIKED);
+				messageSystem.sendMessage(Message.PLAYER_STRIKED, new MessageExtra(player));
 				if (players[player].getStrikes() >= MAX_STRIKES) {
 					gotoNextPlayer();
 					changeState(State.GAME_OVER);
@@ -91,7 +91,7 @@ public class GameManager {
 			boolean result = wordManager.playWord(word);
 			if (result) { // if the word works, give the score
 				players[player].increaseScore(1);
-				messageSystem.sendMessage(Message.PLAYER_SCORED);
+				messageSystem.sendMessage(Message.PLAYER_SCORED, new MessageExtra(player));
 				timer = 0.0f;
 				gotoNextPlayer();
 			}
@@ -127,9 +127,8 @@ public class GameManager {
 		}
 		
 		if(!reversedWords.isEmpty()) {
-			recentWords.append(reversedWords.pop());
 			while(!reversedWords.isEmpty()) {
-				recentWords.append(" ");
+				recentWords.append("   ");
 				recentWords.append(reversedWords.pop());
 			}
 		}
