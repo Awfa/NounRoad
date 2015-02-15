@@ -8,9 +8,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 
 public class GameManager {
-	public static final float INIT_TIME = 5.0f;
-	public static final float TIME_LIMIT = 3.0f;
+	public static final float INIT_TIME = 1.0f;
+	public static final float TIME_LIMIT = 30.0f;
 	public static final int MAX_STRIKES = 3;
+	public static final int NUM_OF_PLAYERS = 2;
 	
 	public enum State {
 		ENTERING_PLAYER_NAMES,
@@ -30,16 +31,18 @@ public class GameManager {
 	
 	public GameManager(MessageSystem messageSystem) {
 		gameState = State.ENTERING_PLAYER_NAMES;
-		players = new Player[2];
+		players = new Player[NUM_OF_PLAYERS];
 		
 		// load up nouns
 		FileHandle nounListHandle = Gdx.files.internal("nouns.txt");
 		String nounList = nounListHandle.readString();
 		String[] nouns = nounList.split("\n");
 		
-		Set<String> words = new HashSet<String>();
+		Set<String> words = new HashSet<String>(53800);
 		for(String noun : nouns) {
+			noun = noun.toLowerCase().trim();
 			words.add(noun);
+			System.out.println(noun);
 		}
 		
 		wordManager = new WordManager(words);
@@ -50,6 +53,7 @@ public class GameManager {
 		if (gameState == State.GAME_INITIALIZE) {
 			timer += deltaTime;
 			if (timer > INIT_TIME) {
+				timer = 0.0f;
 				changeState(State.GAME_RUNNING);
 			}
 		}
@@ -57,11 +61,12 @@ public class GameManager {
 			timer += deltaTime;
 			if (timer > TIME_LIMIT) {
 				players[player].increaseStrikes();
-				
+				timer = 0.0f;
 				if (players[player].getStrikes() >= MAX_STRIKES) {
 					changeState(State.GAME_OVER);
+				} else {
+					gotoNextPlayer();
 				}
-				gotoNextPlayer();
 			}
 		}
 	}
@@ -69,15 +74,12 @@ public class GameManager {
 	public void takeInput(String word) {
 		if (gameState == State.ENTERING_PLAYER_NAMES) {
 			// Make a new player with a name
-			if (player < players.length) {
-				players[player] = new Player(word);
-				player++;
-			}
-			
-			// Once everyone is ready, get the game to go
-			if (player == players.length) {
+			players[player] = new Player(word);
+			if (player == players.length - 1) {
+				// Once everyone is ready, get the game to go
 				changeState(State.GAME_INITIALIZE);
 			}
+			gotoNextPlayer();
 		} else if (gameState == State.GAME_INITIALIZE) {
 			// shouldn't be able to receive words while initializing
 			throw new IllegalStateException();
@@ -95,8 +97,33 @@ public class GameManager {
 		return gameState;
 	}
 	
+	public Player getPlayer(int playerNum) {
+		return players[playerNum];
+	}
+	
+	public float getTimeLeft() {
+		return TIME_LIMIT - timer;
+	}
+	
+	public Player getCurrentPlayer() {
+		return players[player];
+	}
+	
+	public String getRecentWords() {
+		StringBuilder recentWords = new StringBuilder();
+		for(String word : wordManager.getUsedWords()) {
+			recentWords.append(word);
+			recentWords.append(" ");
+		}
+		if (recentWords.length() > 0) {
+			recentWords.deleteCharAt(recentWords.length()-1);
+		}
+		
+		return recentWords.toString();
+	}
+	
 	private void gotoNextPlayer() {
-		player = (player + 1) % players.length;
+		player = (player + 1) % NUM_OF_PLAYERS;
 	}
 	
 	private void changeState(State newState) {

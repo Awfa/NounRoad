@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.ObjectMap;
 public class MessageSystem {
 	public enum Message {
 		STATE_CHANGE,
+		TEXT_ENTERED,
 		PLAYER_SCORED, PLAYER_STRIKED, INVALID_INPUT
 	}
 	
