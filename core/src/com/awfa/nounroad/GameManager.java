@@ -25,6 +25,8 @@ public class GameManager {
 	private Player[] players;
 	private int player;
 	
+	private int wordsPlayed;
+	
 	private float timer;
 	
 	private State gameState;
@@ -92,6 +94,7 @@ public class GameManager {
 			boolean result = wordManager.playWord(word);
 			if (result) { // if the word works, give the score
 				players[player].increaseScore(1);
+				wordsPlayed++;
 				messageSystem.sendMessage(Message.PLAYER_SCORED, new MessageExtra(player));
 				timer = 0.0f;
 				gotoNextPlayer();
@@ -103,6 +106,10 @@ public class GameManager {
 	
 	public State getState() {
 		return gameState;
+	}
+	
+	public int getWordsPlayed() {
+		return wordsPlayed;
 	}
 	
 	public Player getPlayer(int playerNum) {

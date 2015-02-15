@@ -29,9 +29,23 @@
 			yOffset: 0
 		},
 		{
-			name: "recentWords"
-			xPos: 1253
-			yPos: 696
+			name: "recentWords",
+			xPos: 1253,
+			yPos: 696,
+			xOffset: 0,
+			yOffset: 0
+		},
+		{
+			name: "scoreBox",
+			xPos: 444,
+			yPos: 136,
+			xOffSet: 0,
+			yOffset: 0
+		},
+		{
+			name: "textBox",
+			xPos: 228,
+			yPos: 240,
 			xOffset: 0,
 			yOffset: 0
 		}
