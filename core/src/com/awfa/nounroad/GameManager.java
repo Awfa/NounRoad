@@ -13,6 +13,7 @@ public class GameManager {
 	public static final float TIME_LIMIT = 12.0f;
 	public static final int MAX_STRIKES = 3;
 	public static final int NUM_OF_PLAYERS = 2;
+	public static final String RECENT_DELIMITER = "   ";
 	
 	public enum State {
 		ENTERING_PLAYER_NAMES,
@@ -130,7 +131,7 @@ public class GameManager {
 		
 		if(!reversedWords.isEmpty()) {
 			while(!reversedWords.isEmpty()) {
-				recentWords.append("   ");
+				recentWords.append(RECENT_DELIMITER);
 				recentWords.append(reversedWords.pop());
 			}
 		}

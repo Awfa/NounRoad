@@ -144,6 +144,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 				progressWidth = 823*(gameManager.getTimeLeft()/GameManager.TIME_LIMIT);
 			}
 			shape.rect(250, 720-480-12, progressWidth, 3);
+			shape.rect(250, 720-480-12-3, 3, 9);
 			sparkEmitter.setPosition(250 + progressWidth, 720-480-12);
 		}
 		shape.end();
@@ -265,12 +266,12 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 				gameInputManager.setInput(lastLetter);
 				
 				// make sure sliding doesn't glitch when the recent words limit is reached
-				String[] lastWordsList = lastWords.split(" ");
-				if(lastWordsList.length == WordManager.MAX_RECENT_WORDS) {
+				String[] lastWordsList = lastWords.split(GameManager.RECENT_DELIMITER);
+				if(lastWordsList.length == WordManager.MAX_RECENT_WORDS+1) {
 					recentWordsPosition.setNewPosition(
 							recentWordsDP.xPos
 								-gameFont.getBounds(lastWords).width
-								+gameFont.getBounds(" " + lastWordsList[lastWordsList.length-1]).width,
+								+gameFont.getBounds(GameManager.RECENT_DELIMITER + lastWordsList[lastWordsList.length-1]).width,
 							recentWordsDP.yPos);
 				}
 				
