@@ -108,6 +108,10 @@ public class GameManager {
 		return gameState;
 	}
 	
+	public int getPlayerIndex() {
+		return player;
+	}
+	
 	public int getWordsPlayed() {
 		return wordsPlayed;
 	}

@@ -12,7 +12,7 @@ public class GameInputManager implements InputProcessor {
 	
 	public GameInputManager(MessageSystem messageSystem) {
 		this.messageSystem = messageSystem;
-		input = "";
+		input = "Player1";
 	}
 	
 	public String getInput() {

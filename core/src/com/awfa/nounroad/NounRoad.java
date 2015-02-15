@@ -59,20 +59,20 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	public void create() {
 		messageSystem = new MessageSystem();
 		
-		LoggingSystem logger = new LoggingSystem(messageSystem);
-		AudioSystem audioSystem = new AudioSystem(messageSystem);
-		
-		gameManager = new GameManager(messageSystem);
-		gameInputManager = new GameInputManager(messageSystem);
-		Gdx.input.setInputProcessor(gameInputManager);
-		GameConfig.loadConfig(Gdx.files.internal("config.json"));
-		
 		messageSystem.register(this, Message.TEXT_ENTERED);
 		messageSystem.register(this, Message.STATE_CHANGE);
 		messageSystem.register(this, Message.PLAYER_SCORED);
 		messageSystem.register(this, Message.PLAYER_STRIKED);
 		messageSystem.register(this, Message.INVALID_INPUT);
 		messageSystem.register(this, Message.PLAYER_NAME_ENTERED);
+		
+		LoggingSystem logger = new LoggingSystem(messageSystem);
+		AudioSystem audioSystem = new AudioSystem(messageSystem);
+		
+		gameInputManager = new GameInputManager(messageSystem);
+		gameManager = new GameManager(messageSystem);
+		Gdx.input.setInputProcessor(gameInputManager);
+		GameConfig.loadConfig(Gdx.files.internal("config.json"));
 		
 		atlas = new TextureAtlas("graphicAssets.atlas");
 		batch = new SpriteBatch();
@@ -260,8 +260,8 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			if (gameManager.getState() == GameManager.State.GAME_OVER) {
 				gameInputManager.setInput(gameManager.getCurrentPlayer().getName() + " wins!");
 			}
-		} else if (message == Message.PLAYER_NAME_ENTERED) {
-			gameInputManager.setInput("");
+		} else if (message == Message.PLAYER_NAME_ENTERED && gameManager.getPlayerIndex() == 0) {
+			gameInputManager.setInput("Player2");
 		}
 		
 	}
