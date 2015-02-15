@@ -13,6 +13,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	private MessageSystem messageSystem;
 	private GameManager gameManager;
 	private GameInputManager gameInputManager;
+	private GameConfig gameConfig;
 	
 	// prototype rendering
 	private SpriteBatch batch;
@@ -26,6 +27,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		gameManager = new GameManager(messageSystem);
 		gameInputManager = new GameInputManager(messageSystem);
 		Gdx.input.setInputProcessor(gameInputManager);
+		GameConfig.loadConfig(Gdx.files.internal("config.json"));
 		
 		messageSystem.register(this, Message.TEXT_ENTERED);
 		//prototype rendering
