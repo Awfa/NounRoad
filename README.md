@@ -5,4 +5,8 @@ Welcome to Noun Rush: a game based on the words you know. At the start of the ga
 - Shift + Backspace erases the entire line in the text entry box.
 - Typing in "CodeDayWinningFeature" at the winner's screen resets the game back to the beginning where you enter the players' names.
 
+### Gameplay
+  - *Yellow* border around the text entry means the word is not included in the given dictionary, or has already been used.
+  - *Red* border around the text entry means you didn't submit a word in time and received a strike!
+
 ![Noun Rush Screenshot](/NounRushScreenshot.png?raw=true "Screenshot")
