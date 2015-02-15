@@ -26,7 +26,14 @@
 			xPos: 1298,
 			yPos: 537,
 			xOffset: 0,
-			yOffset:0
+			yOffset: 0
+		},
+		{
+			name: "recentWords"
+			xPos: 1280
+			yPos: 696
+			xOffset: 0,
+			yOffset: 0
 		}
 	]
 }
