@@ -1,5 +1,8 @@
 package com.awfa.nounroad;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.awfa.nounroad.MessageSystem.Message;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.graphics.Color;
@@ -9,6 +12,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.ParticleEffect;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool;
+import com.badlogic.gdx.graphics.g2d.ParticleEffectPool.PooledEffect;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -36,7 +41,8 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	private ParticleEmitter sparkEmitter;
 	
 	private ParticleEffect strikeSparks;
-	private ParticleEmitter strikeSparkEmitter;
+	private ParticleEffectPool strikeSparksEffectPool;
+	List<PooledEffect> strikeSparkEffects;
 	
 	private InterpolatedPosition recentWordsPosition;
 	@Override
@@ -71,8 +77,9 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		sparkEmitter.setContinuous(true);
 		
 		strikeSparks = new ParticleEffect();
-		strikeSparks.load(Gdx.files.internal("strikeSparks.p"), Gdx.files.internal(""));
-		strikeSparkEmitter = strikeSparks.findEmitter("sparks");
+		strikeSparks.load(Gdx.files.internal("strikeSparks.p"), atlas);
+		strikeSparksEffectPool = new ParticleEffectPool(strikeSparks, 6, 6);
+		strikeSparkEffects = new ArrayList<PooledEffect>(6);
 		
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
@@ -154,7 +161,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			arrow.draw(batch);
 			
 			// draw the recent words making the most recent word appear on the very right
-			recentWordsPosition.update(Gdx.graphics.getDeltaTime());
+			recentWordsPosition.update(Gdx.graphics.getDeltaTime()/0.5f);
 			gameFont.draw(batch, gameManager.getRecentWords(),
 					recentWordsPosition.getCurrX(),
 					recentWordsPosition.getCurrY());
@@ -165,6 +172,14 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			
 			// render the sparks
 			sparkEmitter.draw(batch, Gdx.graphics.getDeltaTime());
+			for (int i = strikeSparkEffects.size()-1; i >= 0; i--) {
+				PooledEffect effect = strikeSparkEffects.get(i);
+				effect.draw(batch, Gdx.graphics.getDeltaTime());
+				if (effect.isComplete()) {
+					effect.free();
+					strikeSparkEffects.remove(i);
+				}
+			}
 		}
 		
 		// draw the text in the main textbox in the center
@@ -223,12 +238,27 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 				}
 				
 				// set the slide target for recent words
-				
 				recentWordsPosition.setNewTarget(
 						recentWordsDP.xPos-gameFont.getBounds(lastWords).width,
 						recentWordsDP.yPos);
 			} else {
 				gameInputManager.setInput("");
+			}
+		}
+		
+		if (message == Message.PLAYER_STRIKED) {
+			if (extra.number == 0) { // first player striked
+				int numOfStrikes = gameManager.getPlayer(0).getStrikes();
+				PooledEffect effect = strikeSparksEffectPool.obtain();
+				DrawPosition dp = GameConfig.drawPositions.get("strikePositionPlayer1");
+				effect.setPosition(dp.xPos + dp.xOffset * numOfStrikes - 33, dp.yPos + 30);
+				strikeSparkEffects.add(effect);
+			} else { // second player striked
+				int numOfStrikes = gameManager.getPlayer(1).getStrikes();
+				PooledEffect effect = strikeSparksEffectPool.obtain();
+				DrawPosition dp = GameConfig.drawPositions.get("strikePositionPlayer2");
+				effect.setPosition(dp.xPos + dp.xOffset * numOfStrikes + 90, dp.yPos + 30);
+				strikeSparkEffects.add(effect);
 			}
 		}
 	}
