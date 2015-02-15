@@ -20,7 +20,7 @@ public class AudioSystem implements MessageListener {
 		
 		correctSound = Gdx.audio.newSound(Gdx.files.internal("correct.wav"));
 		strikeSound = Gdx.audio.newSound(Gdx.files.internal("wrong.mp3"));
-		invalidSound = strikeSound;
+		invalidSound = Gdx.audio.newSound(Gdx.files.internal("invalid.ogg"));
 		
 		theme = Gdx.audio.newMusic(Gdx.files.internal("backgroundMusic.ogg"));
 		
