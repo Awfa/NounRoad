@@ -33,6 +33,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	private ShapeRenderer shape;
 	private OrthographicCamera camera;
 	private BitmapFont gameFont;
+	private BitmapFont smallFont;
 	
 	private NinePatch nameBox;
 	
@@ -78,6 +79,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		shape = new ShapeRenderer();
 		camera = new OrthographicCamera();
 		gameFont = new BitmapFont(Gdx.files.internal("font.txt"));
+		smallFont = new BitmapFont(Gdx.files.internal("fontSmall.txt"));
 		
 		nameBox = atlas.createPatch("nameBox");
 		
@@ -170,9 +172,18 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		
 		redTextBox.draw(batch, textBoxPosition.xPos, textBoxPosition.yPos, 823, 92);
 		greenTextBox.draw(batch, textBoxPosition.xPos, textBoxPosition.yPos, 823, 92);
-		yellowTextBox.draw(batch, textBoxPosition.xPos, textBoxPosition.yPos, 823, 92);
+		yellowTextBox.draw(batch, textBoxPosition.xPos, textBoxPosition.yPos, 823, 92);		
 		
 		if(gameManager.getState() != GameManager.State.ENTERING_PLAYER_NAMES) {
+			// draw the score box
+			DrawPosition scoreBoxPosition = GameConfig.drawPositions.get("scoreBox");
+			textBox.draw(batch, scoreBoxPosition.xPos, scoreBoxPosition.yPos, 391, 51);
+			
+			String scoreBoxText = "Words Played: " + gameManager.getWordsPlayed();
+			smallFont.draw(batch, scoreBoxText,
+					scoreBoxPosition.xPos + (391.f/2) - smallFont.getBounds(scoreBoxText).width/2,
+					scoreBoxPosition.yPos + 45);
+			
 			// draw player 1's box and name
 			Player player1 = gameManager.getPlayer(0);
 			String p1Name = player1.getName();
