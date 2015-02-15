@@ -8,7 +8,7 @@ public class WordManager {
 	private Set<String> availableWords;
 	private Deque<String> recentUsed;
 	
-	public static final int MAX_RECENT_WORDS = 10;
+	public static final int MAX_RECENT_WORDS = 20;
 	
 	public WordManager(Set<String> words) {
 		availableWords = words;
