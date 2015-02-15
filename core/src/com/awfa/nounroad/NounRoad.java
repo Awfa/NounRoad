@@ -50,6 +50,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		messageSystem = new MessageSystem();
 		
 		LoggingSystem logger = new LoggingSystem(messageSystem);
+		AudioSystem audioSystem = new AudioSystem(messageSystem);
 		
 		gameManager = new GameManager(messageSystem);
 		gameInputManager = new GameInputManager(messageSystem);
