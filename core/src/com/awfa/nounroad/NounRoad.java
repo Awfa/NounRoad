@@ -18,6 +18,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
 	private BitmapFont arial15;
+	private BitmapFont test72;
 	
 	@Override
 	public void create () {
@@ -30,7 +31,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		//prototype rendering
 		batch = new SpriteBatch();
 		camera = new OrthographicCamera();
-		arial15 = new BitmapFont();
+		arial15 = new BitmapFont(Gdx.files.internal("font.txt"));
 		
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
@@ -42,37 +43,37 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 	@Override
 	public void render() {
 		gameManager.update(Gdx.graphics.getDeltaTime());
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(203.f/255, 240.f/255, 241.f/255, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		int textY = 705;
 		camera.update();
 		batch.begin();
-		
+		int offset = 72;
 		arial15.draw(batch, "Game State: " + gameManager.getState(), 15, textY);
-		textY -= 15;
+		textY -= offset;
 		
 		if(gameManager.getState() != GameManager.State.ENTERING_PLAYER_NAMES) {
 			Player p1 = gameManager.getPlayer(0);
 			Player p2 = gameManager.getPlayer(1);
 			
 			arial15.draw(batch, "Time left: " + gameManager.getTimeLeft(), 15, textY);
-			textY -= 15;
+			textY -= offset;
 			
 			arial15.draw(batch, "Player 1 Name: " + p1.getName() + ", Strikes: " + p1.getStrikes(), 15, textY);
-			textY -= 15;
+			textY -= offset;
 			
 			arial15.draw(batch, "Player 2 Name: " + p2.getName() + ", Strikes: " + p2.getStrikes(), 15, textY);
-			textY -= 15;
+			textY -= offset;
 			
 			arial15.draw(batch, "It is " + gameManager.getCurrentPlayer().getName(), 15, textY);
-			textY -= 15;
+			textY -= offset;
 			
 			arial15.draw(batch, "Recently used words: " + gameManager.getRecentWords(), 15, textY);
-			textY -= 15;
+			textY -= offset;
 		}
 		
 		arial15.draw(batch, "Type here: " + gameInputManager.getInput(), 15, textY);
-		textY -= 15;
+		textY -= offset;
 		
 		batch.end();
 	}

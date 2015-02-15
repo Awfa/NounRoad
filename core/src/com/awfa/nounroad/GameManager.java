@@ -42,7 +42,6 @@ public class GameManager {
 		for(String noun : nouns) {
 			noun = noun.toLowerCase().trim();
 			words.add(noun);
-			System.out.println(noun);
 		}
 		
 		wordManager = new WordManager(words);
