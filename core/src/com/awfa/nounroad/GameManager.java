@@ -87,6 +87,7 @@ public class GameManager {
 			boolean result = wordManager.playWord(word);
 			if (result) { // if the word works, give the score
 				players[player].increaseScore(1);
+				timer = 0.0f;
 				gotoNextPlayer();
 			}
 		}
