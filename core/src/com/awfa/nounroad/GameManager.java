@@ -94,6 +94,8 @@ public class GameManager {
 				messageSystem.sendMessage(Message.PLAYER_SCORED, new MessageExtra(player));
 				timer = 0.0f;
 				gotoNextPlayer();
+			} else {
+				messageSystem.sendMessage(Message.INVALID_INPUT, new MessageExtra(player));
 			}
 		}
 	}
