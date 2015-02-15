@@ -136,6 +136,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		
 		// draw the progress bar and set the position for the bar sparks
 		if(gameManager.getState() != GameManager.State.ENTERING_PLAYER_NAMES) {
+			DrawPosition textBoxPosition = GameConfig.drawPositions.get("textBox");
 			shape.setColor(new Color(60.f/255, 144.f/255, 179.f/255, 1.0f));
 			float progressWidth = 0.0f;
 			if(gameManager.getState() == GameManager.State.GAME_INITIALIZE) {
@@ -143,9 +144,9 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 			} else {
 				progressWidth = 823*(gameManager.getTimeLeft()/GameManager.TIME_LIMIT);
 			}
-			shape.rect(250, 720-480-12, progressWidth, 3);
-			shape.rect(250, 720-480-12-3, 3, 9);
-			sparkEmitter.setPosition(250 + progressWidth, 720-480-12);
+			shape.rect(textBoxPosition.xPos, textBoxPosition.yPos-12, progressWidth, 3);
+			shape.rect(textBoxPosition.xPos, textBoxPosition.yPos-12-3, 3, 9);
+			sparkEmitter.setPosition(textBoxPosition.xPos + progressWidth, textBoxPosition.yPos-12);
 		}
 		shape.end();
 		
@@ -155,7 +156,8 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		drawFromConfig(batch, "strikeOutShadow", "strikePositionPlayer2", GameManager.MAX_STRIKES);
 		
 		// draw the text box background
-		textBox.draw(batch, 250, 720-480, 823, 92);
+		DrawPosition textBoxPosition = GameConfig.drawPositions.get("textBox");
+		textBox.draw(batch, textBoxPosition.xPos, textBoxPosition.yPos, 823, 92);
 
 		// draw the text box overlays
 		redAlpha.update(deltaTime/0.5f);
@@ -166,9 +168,9 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		greenTextBox.setColor(new Color(1.0f, 1.0f, 1.0f, greenAlpha.getAlpha()));
 		yellowTextBox.setColor(new Color(1.0f, 1.0f, 1.0f, yellowAlpha.getAlpha()));
 		
-		redTextBox.draw(batch, 250, 720-480, 823, 92);
-		greenTextBox.draw(batch, 250, 720-480, 823, 92);
-		yellowTextBox.draw(batch, 250, 720-480, 823, 92);
+		redTextBox.draw(batch, textBoxPosition.xPos, textBoxPosition.yPos, 823, 92);
+		greenTextBox.draw(batch, textBoxPosition.xPos, textBoxPosition.yPos, 823, 92);
+		yellowTextBox.draw(batch, textBoxPosition.xPos, textBoxPosition.yPos, 823, 92);
 		
 		if(gameManager.getState() != GameManager.State.ENTERING_PLAYER_NAMES) {
 			// draw player 1's box and name
@@ -223,7 +225,7 @@ public class NounRoad extends ApplicationAdapter implements MessageListener {
 		// draw the text in the main textbox in the center
 		gameFont.draw(batch, gameInputManager.getInput(),
 				Gdx.graphics.getWidth()/2 - gameFont.getBounds(gameInputManager.getInput()).width/2,
-				720-480 + 75);
+				textBoxPosition.yPos + 75);
 		batch.end();
 	}
 
