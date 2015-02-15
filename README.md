@@ -4,3 +4,5 @@ Welcome to Noun Rush: a game based on the words you know. At the start of the ga
 - Nouns cannot be repeated and you only have a certain amount of time! - Players gain one strike for each time they cannot think of a word. Three strikes and you're out!
 - Shift + Backspace erases the entire line in the text entry box.
 - Typing in "CodeDayWinningFeature" at the winner's screen resets the game back to the beginning where you enter the players' names.
+
+![Noun Rush Screenshot](/NounRushScreenshot.png?raw=true "Screenshot")
